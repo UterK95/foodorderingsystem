@@ -1,0 +1,86 @@
+# Initialise the menu with item availability and prices
+menu_items = {
+    "Burger": {"available": True, "price": 5.00},
+    "Pizza": {"available": True, "price": 8.50},
+    "Pasta": {"available": True, "price": 7.25}
+}
+
+# Initialise a list to track ordered items
+ordered_items = []
+total_bill = 0.0
+
+while True:
+    # Display the menu
+    print("\n--- Simple Food Ordering System ---")
+    print("1. View Available Menu Items")
+    print("2. Order an Item")
+    print("3. Cancel an Order")
+    print("4. View Bill")
+    print("5. Exit")
+    print("--------------------------------")
+
+    # Get user choice
+    choice = input("Enter your choice (1-5): ")
+
+    # Handle each choice
+    if choice == '1':
+        # View available menu items
+        print("\nAvailable Menu Items:")
+        available = False  # To check if at least one item is available
+
+        for item, details in menu_items.items():  # Loop through the dictionary
+            if details["available"]:  # If the item is available
+                print(f"- {item} (£{details['price']:.2f})")
+                available = True
+
+        if not available:
+            print("No menu items available.")
+
+    elif choice == '2':
+        # Order an item
+        item_name = input("Enter the name of the item you want to order: ").strip()
+
+        if item_name in menu_items:  # Check if the item is in the dictionary
+            if menu_items[item_name]["available"]:  # Check if the item is available
+                menu_items[item_name]["available"] = False  # Mark the item as ordered
+                ordered_items.append(item_name)  # Add item to the list of ordered items
+                total_bill += menu_items[item_name]["price"]  # Update total bill
+                print(f"You have ordered '{item_name}' for £{menu_items[item_name]['price']:.2f}.")
+            else:
+                print(f"'{item_name}' is currently unavailable.")
+        else:
+            print("Item not found.")
+
+    elif choice == '3':
+        # Cancel an order
+        item_name = input("Enter the name of the item you want to cancel: ").strip()
+
+        if item_name in menu_items and item_name in ordered_items:  # Check if item was ordered
+            menu_items[item_name]["available"] = True  # Mark the item as available again
+            ordered_items.remove(item_name)  # Remove item from ordered list
+            total_bill -= menu_items[item_name]["price"]  # Update total bill
+            print(
+                f"You have cancelled the order for '{item_name}'. £{menu_items[item_name]['price']:.2f} has been removed from your bill.")
+        elif item_name in menu_items:
+            print(f"'{item_name}' was not ordered.")
+        else:
+            print("Item not found.")
+
+    elif choice == '4':
+        # View the bill
+        print("\n--- Current Bill ---")
+        if ordered_items:
+            for item in ordered_items:
+                print(f"- {item}: £{menu_items[item]['price']:.2f}")
+            print(f"\nTotal Bill: £{total_bill:.2f}")
+        else:
+            print("No items ordered.")
+
+    elif choice == '5':
+        # Exit the system
+        print("Exiting the system. Have a great day!")
+        break
+
+    else:
+        # Handle invalid choice
+        print("Invalid choice. Please select a valid option.")
